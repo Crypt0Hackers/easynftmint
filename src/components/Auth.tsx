@@ -83,13 +83,6 @@ export default function Auth() {
         enableInterval(false);
     };
 
-    const onRamp = async () => {
-        if (!smartAccount) return;
-        console.log(smartAccount)
-        // const transak = new Transak('STAGING', {
-        //     walletAddress: smartAccount.address,
-        // })
-    }
 
     async function getBalance() {
         if (!!sdkRef?.current?.provider) {
@@ -102,6 +95,16 @@ export default function Auth() {
                 return balanceInEther > String(0) ? balanceInEther : 'No Funds Available';
             }
         }
+    }
+
+    const onRamp = async () => {
+        if (!smartAccount) return;
+        const transak = new Transak('STAGING', {
+            walletAddress: smartAccount.address,
+        })
+
+        // FIAT On-Ramp Popup
+        transak.init();
     }
 
     return (
