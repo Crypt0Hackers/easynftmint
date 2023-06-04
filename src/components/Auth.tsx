@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import SocialLogin from "@biconomy/web3-auth";
+import SocialLogin, { socialLoginSDK } from "@biconomy/web3-auth";
 import { ChainId } from "@biconomy/core-types";
 import SmartAccount from "@biconomy/smart-account";
 import Transak from "@biconomy/transak";
@@ -12,6 +12,7 @@ export default function Auth() {
     const sdkRef = useRef<SocialLogin | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [balance, setBalance] = useState<string | null>(null);
+    const [privateKey, setPrivateKey] = useState<string | null>(null);
 
     useEffect(() => {
         let configureLogin: any;
@@ -31,10 +32,6 @@ export default function Auth() {
     }, [smartAccount?.address, interval]);
 
     // Whitelist URLs
-    const live = 'https://easyonramp.vercel.app'
-    const live2 = "https://easyonramp.vercel.app"
-    const live3 = "https://easyonramp.vercel.app/"
-    const live4 = "easyonramp.vercel.app"
     const dev = 'http://localhost:3000'
 
     async function login() {
@@ -104,15 +101,45 @@ export default function Auth() {
         }
     }
 
+    /**
+     * 
+     * Currency Codes
+     * 
+     * ETH - Ethereum
+     * MATIC - Polygon
+     * BNB - Binance Smart Chain
+     * USDC - USD Coin 
+     * USDT - Tether 
+     * 
+     * Network Codes
+     * 
+     * ethereum
+     * polygon
+     * bsc
+     * 
+     */
     const onRamp = async () => {
         if (!smartAccount) return;
         const transak = new Transak('STAGING', {
             walletAddress: smartAccount.address,
+            cryptoCurrencyCode: 'USDC', 
+            network: 'ethereum',
+            // defaultNetwork: 'ethereum',
         })
-
         // FIAT On-Ramp Popup
         transak.init();
     }
+
+    // TODO: Export Private Key
+    // const exportPrivateKey = async () => {
+    //     if (!smartAccount) return;
+    //     if (!sdkRef.current) return;
+    //     const privateKey = await socialLoginSDK.getPrivateKey()
+    //     console.log('sdkRef ',sdkRef)
+    //     console.log("private key ",privateKey);
+    //     if (!privateKey) return;
+    //     if (typeof privateKey == 'string') {setPrivateKey(privateKey);}
+    // }
 
     return (
         <div className={containerStyle}>
@@ -122,19 +149,25 @@ export default function Auth() {
                     Login
                 </button>
             )}
-            {loading && <p>Loading Account Details</p>}
+            {loading && <p>Loading Account Details...</p>}
             {!!smartAccount && (
                 <div className={detailsContainerStyle}>
-                    <h3> Account Address:</h3>
-                    <p>{smartAccount.address}</p>
-                    <h3> Account Balance:</h3>
-                    <p>{balance}</p>
-                    <button className={buttonStyle} onClick={onRamp}>
-                        Top-Up
-                    </button>
-                    <button className={buttonStyle} onClick={logout}>
-                        Logout
-                    </button>
+                    <div className={infoContainerStyle}>
+                        <h3>Account Address:</h3>
+                        <p className={infoTextStyle}>{smartAccount.address}</p>
+                    </div>
+                    <div className={infoContainerStyle}>
+                        <h3>Account Balance:</h3>
+                        <p className={infoTextStyle}>{balance}</p>
+                    </div>
+                    <div className={buttonContainerStyle}>
+                        <button className={buttonStyle} onClick={onRamp}>
+                            Top-Up
+                        </button>
+                        <button className={buttonStyle} onClick={logout}>
+                            Logout
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
@@ -142,32 +175,70 @@ export default function Auth() {
 }
 
 const detailsContainerStyle = css`
-  margin-top: 10px;
+  margin-top: 1rem;
+  background-color: #F3F3F3;
+  padding: 0.5rem;
+  border-radius: 5px;
+  box-sizing: border-box;
 `;
 
 const buttonStyle = css`
-  padding: 14px;
-  width: 300px;
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 100px;
   border: none;
   cursor: pointer;
-  border-radius: 999px;
+  border-radius: 5px;
   outline: none;
-  margin-top: 20px;
+  margin-bottom: 0.5rem;
   transition: all 0.25s;
+  background-color: #4D4D4D;
+  color: #FFFFFF;
+  box-sizing: border-box;
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: #6D6D6D;
   }
 `;
 
 const headerStyle = css`
-  font-size: 44px;
+  font-size: 1.5rem;
+  color: #4D4D4D;
+  box-sizing: border-box;
 `;
 
 const containerStyle = css`
-  width: 900px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.5rem auto;
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding-top: 100px;
+  padding: 1rem;
+  box-sizing: border-box;
+`;
+
+const infoContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  box-sizing: border-box;
+  width: 100%;
+`;
+
+const infoTextStyle = css`
+  color: #4D4D4D;
+  font-size: 0.8rem;
+  font-weight: 500;
+  box-sizing: border-box;
+`;
+
+const buttonContainerStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 100%;
 `;
