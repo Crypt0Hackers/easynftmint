@@ -40,18 +40,12 @@ export default function Auth() {
     async function login() {
         if (!sdkRef.current) {
             const socialLoginSDK = new SocialLogin();
-            const signature1 = await socialLoginSDK.whitelistUrl(live)
-            const signature2 = await socialLoginSDK.whitelistUrl(live2)
-            const signature3 = await socialLoginSDK.whitelistUrl(live3)
-            const signature4 = await socialLoginSDK.whitelistUrl(live4)
+            const signature1 = await socialLoginSDK.whitelistUrl('https://easyonramp.vercel.app')
             const devSig = await socialLoginSDK.whitelistUrl(dev)
             await socialLoginSDK.init({
                 chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
                 whitelistUrls: {
-                    live: signature1,
-                    live2: signature2,
-                    live3: signature3,
-                    live4: signature4,
+                    'https://easyonramp.vercel.app': signature1,
                     dev: devSig
                 },
             });
