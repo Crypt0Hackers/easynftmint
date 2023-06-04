@@ -38,12 +38,13 @@ export default function Auth() {
         if (!sdkRef.current) {
             const socialLoginSDK = new SocialLogin();
             const signature1 = await socialLoginSDK.whitelistUrl(live)
-            const signature2 = await socialLoginSDK.whitelistUrl(dev)
+            console.log("SIGNATURE ",signature1)
+            // const signature2 = await socialLoginSDK.whitelistUrl(dev)
             await socialLoginSDK.init({
                 chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
                 whitelistUrls: {
-                    dev: signature2,
-                    live: signature1 
+                    live: signature1,
+                    // dev: signature2
                 },
             });
             sdkRef.current = socialLoginSDK;
