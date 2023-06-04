@@ -44,7 +44,7 @@ export default function Auth() {
             const signature2 = await socialLoginSDK.whitelistUrl(live2)
             const signature3 = await socialLoginSDK.whitelistUrl(live3)
             const signature4 = await socialLoginSDK.whitelistUrl(live4)
-            // const signature2 = await socialLoginSDK.whitelistUrl(dev)
+            const devSig = await socialLoginSDK.whitelistUrl(dev)
             await socialLoginSDK.init({
                 chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
                 whitelistUrls: {
@@ -52,7 +52,7 @@ export default function Auth() {
                     live2: signature2,
                     live3: signature3,
                     live4: signature4,
-                    // dev: signature2
+                    dev: devSig
                 },
             });
             sdkRef.current = socialLoginSDK;
