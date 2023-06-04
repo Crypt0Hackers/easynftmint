@@ -122,8 +122,8 @@ export default function Auth() {
         if (!smartAccount) return;
         const transak = new Transak('STAGING', {
             walletAddress: smartAccount.address,
-            cryptoCurrencyCode: 'USDC', 
-            network: 'ethereum',
+            // cryptoCurrencyCode: 'USDC', 
+            // network: 'ethereum',
             // defaultNetwork: 'ethereum',
         })
         // FIAT On-Ramp Popup
