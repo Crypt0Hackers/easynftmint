@@ -33,7 +33,7 @@ export default function Auth() {
     async function login() {
         if (!sdkRef.current) {
             const socialLoginSDK = new SocialLogin();
-            const signature1 = await socialLoginSDK.whitelistUrl('https://biconomy-demo.app')
+            const signature1 = await socialLoginSDK.whitelistUrl('https://easyonramp.vercel.app/')
             const signature2 = await socialLoginSDK.whitelistUrl('http://localhost:3000')
             await socialLoginSDK.init({
                 chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
