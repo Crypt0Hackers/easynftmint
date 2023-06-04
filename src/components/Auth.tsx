@@ -125,6 +125,12 @@ export default function Auth() {
             // cryptoCurrencyCode: 'USDC', 
             // network: 'ethereum',
             // defaultNetwork: 'ethereum',
+            // themeColor: '000000',
+            widgetWidth: '95%',
+            isFeeCalculationHidden: 'true',
+            exchangeScreenTitle: 'Top-Up',
+            // hideMenu: 'true',
+            // widgetHeight: '75%'
         })
         // FIAT On-Ramp Popup
         transak.init();
