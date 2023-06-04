@@ -35,6 +35,7 @@ export default function Auth() {
     const dev = 'http://localhost:3000'
 
     async function login() {
+        setLoading(true);
         if (!sdkRef.current) {
             const socialLoginSDK = new SocialLogin();
             const signature1 = await socialLoginSDK.whitelistUrl('https://easyonramp.vercel.app')
@@ -58,7 +59,6 @@ export default function Auth() {
 
     async function setupSmartAccount() {
         if (!sdkRef?.current?.provider) return;
-        setLoading(true);
         sdkRef.current.hideWallet();
         const web3Provider = new ethers.providers.Web3Provider(
             sdkRef.current.provider
