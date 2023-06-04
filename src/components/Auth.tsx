@@ -30,16 +30,20 @@ export default function Auth() {
 
     }, [smartAccount?.address, interval]);
 
+    // Whitelist URLs
+    const live = 'https://easyonramp.vercel.app'
+    const dev = 'http://localhost:3000'
+
     async function login() {
         if (!sdkRef.current) {
             const socialLoginSDK = new SocialLogin();
-            const signature1 = await socialLoginSDK.whitelistUrl('https://easyonramp.vercel.app/')
-            const signature2 = await socialLoginSDK.whitelistUrl('http://localhost:3000')
+            const signature1 = await socialLoginSDK.whitelistUrl(live)
+            const signature2 = await socialLoginSDK.whitelistUrl(dev)
             await socialLoginSDK.init({
                 chainId: ethers.utils.hexValue(ChainId.POLYGON_MAINNET),
                 whitelistUrls: {
-                    "http://localhost:3000": signature2,
-                    "https://biconomy-demo.vercel.app": signature1 //TODO: Add my demo link here
+                    dev: signature2,
+                    live: signature1 
                 },
             });
             sdkRef.current = socialLoginSDK;
