@@ -1,36 +1,38 @@
-# Easy Onramp Web3 Authentication 
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This project provides a simple implementation for Web3 Account Abstraction & Social Login.
+## Getting Started
 
-The example use case on display is a way to improve the UX for NFT Minting Sites to accommodate for Web2 Users & easily help them purchase NFTs.
-
-This project is currently deployed on Polygon Mainnet.
-
-## Key Libraries Used
-- **@biconomy/web3-auth**: Biconomy's SDK for social login integration with web3 applications.
-- **@biconomy/smart-account**: Biconomy's SDK for smart account management.
-- **@biconomy/transak**: Transak API for seamless fiat-to-crypto transactions.
-- **@biconomy/core-types**: Core types used in Biconomy SDKs.
-- **ethers**: A complete Ethereum JavaScript library.
-- **@emotion/css**: A powerful CSS-in-JS library.
-
-## How It Works
-1. A user clicks the Login button, which triggers the `login` function. This function initializes a new instance of SocialLogin and configures it with chain ID and whitelisted URLs.
-
-2. After initialization, the function checks if a provider exists. If there isn't one, it opens the wallet selection UI. If a provider exists, it proceeds to set up the smart account.
-
-3. The `setupSmartAccount` function is used to initialize the smart account, including setting up the provider, network ID, and finally setting the smart account state.
-
-4. The `getBalance` function is used to fetch the balance of the connected account.
-
-5. `onRamp` function is used to top-up funds in the account via Transak.
-
-6. `buyItem` function is implemented to handle a simple purchase transaction. It initializes the contract and constructs a transaction. It checks the user's balance and handles the scenarios where the user has enough funds, some funds but not enough, and no funds.
-
-7. A `logout` function is provided to enable users to disconnect their account.
-
-## Installation
-Before you can use this code in your project, make sure to install all necessary dependencies.
+First, run the development server:
 
 ```bash
-npm install @biconomy/web3-auth @biconomy/smart-account @biconomy/transak @biconomy/core-types ethers @emotion/css
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
