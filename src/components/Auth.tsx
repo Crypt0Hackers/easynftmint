@@ -3,8 +3,10 @@ import SocialLogin, { socialLoginSDK } from "@biconomy/web3-auth";
 import { ChainId } from "@biconomy/core-types";
 import SmartAccount from "@biconomy/smart-account";
 import Transak from "@biconomy/transak";
-import { ethers } from "ethers";
+import { ethers, providers } from "ethers";
 import { css } from "@emotion/css";
+import { address } from '../ethereum/address.js'
+import abi from '../ethereum/abi.json'
 
 export default function Auth() {
     const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
@@ -13,6 +15,7 @@ export default function Auth() {
     const [loading, setLoading] = useState<boolean>(false);
     const [balance, setBalance] = useState<string | null>(null);
     const [privateKey, setPrivateKey] = useState<string | null>(null);
+    const price = ethers.utils.formatEther(1000000000000000);
 
     useEffect(() => {
         let configureLogin: any;
@@ -136,6 +139,79 @@ export default function Auth() {
         transak.init();
     }
 
+    const buyItem = async () => {
+        if (!smartAccount) return;
+        if (!sdkRef.current) return;
+
+        // Initialise Web3 Wallet Provider
+        let provider
+        if (!!sdkRef?.current?.provider) {
+            provider = new ethers.providers.Web3Provider(sdkRef.current.provider);
+        } else {
+            alert('Please Login')
+        }
+
+        // Initialise NFT Contract & Create Transaction
+        const contract = new ethers.Contract(address, abi, provider);
+        const init = await contract.populateTransaction.mint(1)
+        const tx = {
+            to: address,
+            data: init.data,
+        }
+        
+        // Get Gas Price
+        const feeAmounts = await smartAccount.getFeeQuotes({ transaction: tx }); // 0 represents native token
+        const finalPrice = ethers.utils.parseEther(price).add(feeAmounts[0].tokenGasPrice)
+
+        // Check if user has enough funds & store amount to top-up
+        let topUp = false;
+        let amountToTopUp;
+
+        // If user has no funds, top-up with finalPrice
+        // If user has some funds but not enough for mint, top-up with amountToTopUp
+        // If user has enough funds, send transaction
+        if (balance == null) {
+            topUp = true;
+            amountToTopUp = ethers.utils.formatEther(finalPrice)
+        } else if (balance < String(ethers.utils.formatEther(finalPrice))) {
+            topUp = true;
+            amountToTopUp = ethers.utils.formatEther(Number(finalPrice) - Number(balance))
+        } else {
+            topUp = false;
+        }
+
+        // If user has enough funds, send transaction
+        // If user does not have enough funds, top-up with amountToTopUp
+        if (topUp == false) {
+            const tx2 = await smartAccount.createUserPaidTransaction({
+                transaction: tx,
+                feeQuote: feeAmounts[0]
+            });
+
+            const receipt = smartAccount.sendUserPaidTransaction({
+                tx: tx2,
+                gasLimit: {
+                    hex: "0xC3500",
+                    type: "hex",
+                }
+            });
+            console.log('receipt ', receipt)
+            alert('Transaction Successful')
+        } else {
+            const transak = new Transak('STAGING', {
+                walletAddress: smartAccount.address,
+                network: 'polygon',
+                widgetWidth: '95%',
+                isFeeCalculationHidden: 'true',
+                exchangeScreenTitle: 'Top-Up',
+                defaultCryptoAmount: amountToTopUp,
+                cryptoCurrencyCode: 'MATIC',
+            })
+            // FIAT On-Ramp Popup
+            transak.init();
+        }
+    }
+
     // TODO: Export Private Key
     // const exportPrivateKey = async () => {
     //     if (!smartAccount) return;
@@ -165,6 +241,14 @@ export default function Auth() {
                     <div className={infoContainerStyle}>
                         <h3>Account Balance:</h3>
                         <p className={infoTextStyle}>{balance}</p>
+                    </div>
+                    <div className={infoContainerStyle}>
+                        <h3>Item for Sale:</h3>
+                        <img src="/nft.jpeg" style={{ maxWidth: '100%' }} />
+                        <p className={infoTextStyle}>Item Price: {price} ETH</p>
+                        <button className={buttonStyle} onClick={buyItem}>
+                            Buy Item
+                        </button>
                     </div>
                     <div className={buttonContainerStyle}>
                         <button className={buttonStyle} onClick={onRamp}>
