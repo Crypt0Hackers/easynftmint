@@ -203,7 +203,7 @@ export default function Auth() {
                 network: 'polygon',
                 widgetWidth: '95%',
                 isFeeCalculationHidden: 'true',
-                exchangeScreenTitle: 'Top-Up',
+                exchangeScreenTitle: 'Insufficient Balance! Please Top-Up',
                 defaultCryptoAmount: amountToTopUp,
                 cryptoCurrencyCode: 'MATIC',
             })
